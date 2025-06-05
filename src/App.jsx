@@ -1,15 +1,22 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import { Login } from "./pages/Login";
+// src/App.jsx
+import { useState } from 'react';
+import './App.css';
+
+// Rutas directas
+import FormLogin from './sections/login/FormLogin';
+import Dashboard from './pages/Dashboard';
 
 function App() {
-  return (
-    <>
-      <Login />
-    </>
-  );
+  const [user, setUser] = useState(null);
+
+  const handleLogin = (credentials) =>
+    setUser({ fullName: 'Diego Salazar Garcia', ...credentials });
+
+  const handleLogout = () => setUser(null);
+
+  if (!user) return <FormLogin onSuccess={handleLogin} />;
+
+  return <Dashboard user={user} onLogout={handleLogout} />;
 }
 
 export default App;
