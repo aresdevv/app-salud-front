@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Componentes UI
@@ -7,41 +8,54 @@ import AppointmentsTimeline from '../components/Appointments/AppointmentsTimelin
 import NotificationPanel from '../components/Notifications/NotificationPanel';
 import QuickActions from '../components/QuickActions/QuickActions';
 
-/**
- * Vista principal tras el login.
- * Recibe el objeto `user` y la función `onLogout` desde App.jsx.
- */
 export default function Dashboard({ user, onLogout, onNavigate }) {
-  /* Ejemplo de datos simulados  ----------------------------- */
-  const appointments = [
-    { id: 1, time: '8:00 AM',  patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-    { id: 2, time: '9:00 AM',  patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-    { id: 3, time: '10:00 AM', patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-    { id: 4, time: '11:00 AM', patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-    { id: 5, time: '12:00 PM', patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-    { id: 6, time: '1:00 PM',  patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-    { id: 7, time: '2:00 PM',  patient: 'Diego Salazar Garcia', status: 'Pendiente' },
-  ];
-
-  const notifications = [
+  const [appointments, setAppointments] = useState([]);
+  const [notifications, setNotifications] = useState([
     { id: 1, title: 'Título de la Notificación', body: 'Lorem viverra urna, elit tortor, ex ipsum sollicitudin…' },
     { id: 2, title: 'Título de la Notificación', body: 'Lorem viverra urna, elit tortor, ex ipsum sollicitudin…' },
     { id: 3, title: 'Título de la Notificación', body: 'Lorem viverra urna, elit tortor, ex ipsum sollicitudin…' },
-  ];
-  /* -------------------------------------------------------- */
+  ]);
 
-  /* Handlers */
+  // 🚀 Cargar citas médicas desde el backend
+  useEffect(() => {
+  fetch('http://localhost:8080/api/medicalAppointment', {
+    method: 'GET',
+    credentials: 'include', // <- ESTO ES CLAVE
+  })
+    .then(async res => {
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Error ${res.status}: ${errText}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      const mapped = data.map(item => ({
+        id: item.appointment_id,
+        time: new Date(item.appintment_time).toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        patient: item.patient_name,
+        status: item.status,
+        reason: item.reason,
+      }));
+      setAppointments(mapped);
+    })
+    .catch(err => {
+      console.error('Error cargando citas:', err);
+    });
+}, []);
+
+
   const handleAcceptNotification = (id) => {
     console.log('Aceptar notificación', id);
-    // TODO: actualizar estado o llamar API
   };
 
   const handleCreatePrescription = () => {
     console.log('Crear receta');
-    // TODO: Navegar a módulo de recetas
   };
 
-  /* Render -------------------------------------------------- */
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <Sidebar onLogout={onLogout} onNavigate={onNavigate} />
@@ -49,10 +63,9 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
       <main style={{ flex: 1, padding: '1.5rem 2.5rem', overflowY: 'auto' }}>
         <TopBar user={user} onNavigate={onNavigate} />
 
-        {/* Cuerpo principal */}
         <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
           <AppointmentsTimeline
-            date={new Date(2025, 3, 10)}   /* 10-abril-2025 */
+            date={new Date()} // Fecha actual
             appointments={appointments}
           />
 
@@ -62,7 +75,6 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
           />
         </div>
 
-        {/* Accesos rápidos */}
         <div style={{ marginTop: '3rem' }}>
           <QuickActions onCreatePrescription={handleCreatePrescription} />
         </div>
