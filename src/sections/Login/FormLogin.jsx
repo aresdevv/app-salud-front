@@ -5,10 +5,35 @@ import { useState } from "react";
 export default function FormLogin({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [responseMessage, setResponseMessage] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    onLogin({ username, password });
+    setLoading(true);
+    setResponseMessage(null);
+
+    try {
+      const res = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: username, password })
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Error en la respuesta del servidor');
+      }
+
+      const data = await res.json();
+      setResponseMessage(`Login exitoso. Usuario: ${data.email}`);
+      onLogin({ fullName: data.fullName || data.email }); // Llama a onLogin para actualizar el estado global
+    } catch (err) {
+      setResponseMessage(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,7 +43,7 @@ export default function FormLogin({ onLogin }) {
       </div>
       <form
         className="flex gap-4 flex-col justify-center items-center p-6 rounded  w-72"
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
       >
         <InputLogin
           placeholder={"Username"}
@@ -32,8 +57,15 @@ export default function FormLogin({ onLogin }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button className="bg-white w-full rounded-lg h-10 font-bold" type="submit">
-          Iniciar Sesión
+        {responseMessage && (
+          <div className="text-red-500 text-sm w-full text-center">{responseMessage}</div>
+        )}
+        <button
+          className="bg-white w-full rounded-lg h-10 font-bold"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Cargando..." : "Iniciar Sesión"}
         </button>
       </form>
     </div>

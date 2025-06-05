@@ -23,7 +23,7 @@ const MOCK_PATIENTS = [
   // …añade los que necesites
 ];
 
-export default function Pacientes() {
+export default function Pacientes({ onLogout, onNavigate, user }) {
   const [patients] = useState(MOCK_PATIENTS);
   const [page, setPage] = useState(1);
   const perPage = 6;
