@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
-import FilterPanel from "../components/Patients/FilterPanel";
-import PatientCard from "../components/Patients/PatientCard";
 import Pagination from "../components/Patients/Pagination";
-import AddPatientModal from "../components/modal/AddPatientModal";
+import RecipeModal from "../components/modal/RecipeModal";
 import RecipeCard from "../components/recipe/RecipeCard";
 
 export default function Recetas({ onLogout, onNavigate, user }) {
   const [showModal, setShowModal] = useState(false);
-  const [patients, setPatients] = useState([]);
+  const [prescriptions, setPrescriptions] = useState([]);
   const [page, setPage] = useState(1);
   const perPage = 6;
 
+  // ✅ Cargar recetas desde la API
   useEffect(() => {
-    fetch("http://localhost:8080/api/patient", {
+    fetch("http://localhost:8080/api/prescription", {
       method: "GET",
-      credentials: "include", 
+      credentials: "include",
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -25,47 +24,24 @@ export default function Recetas({ onLogout, onNavigate, user }) {
         return res.json();
       })
       .then((data) => {
-        // Mapear a formato esperado por PatientCard
-        const mapped = data.map((p) => ({
-          id: p.patient_id,
-          fullName: p.full_name,
-          age: p.age,
-          gender: p.gender === "M" ? "Masculino" : "Femenino",
-          lastVisit: "Hace poco", // puedes reemplazar esto si tienes un campo real
+        const mapped = data.map((r) => ({
+          id: r.prescription_id,
+          patientName: r.patient_name,
+          patientDni: r.patient_dni,
+          issuedAt: r.issued_at,
+          items: r.items,
         }));
-        setPatients(mapped);
+        setPrescriptions(mapped);
       })
       .catch((err) => {
-        console.error("Error al cargar pacientes:", err);
+        console.error("Error al cargar recetas:", err);
       });
   }, []);
 
-  const filtered = patients; // puedes conectar esto con el buscador y filtros
-  const totalPages = Math.ceil(filtered.length / perPage);
-  const paginated = filtered.slice((page - 1) * perPage, page * perPage);
-  const handleCreatePatient = (newPatient) => {
-    console.log("Enviar al backend:", newPatient);
+  // Paginación
+  const totalPages = Math.ceil(prescriptions.length / perPage);
+  const paginated = prescriptions.slice((page - 1) * perPage, page * perPage);
 
-    fetch("http://localhost:8080/api/patient", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPatient),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al guardar paciente");
-        return res.json();
-      })
-      .then((data) => {
-        alert("Paciente registrado con éxito");
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Hubo un error al guardar");
-      });
-  };
   return (
     <>
       <div className="flex min-h-screen">
@@ -79,12 +55,12 @@ export default function Recetas({ onLogout, onNavigate, user }) {
               className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded"
               onClick={() => setShowModal(true)}
             >
-              <span className="material-symbols-outlined text-base">add</span>
-              Agregar Paciente
+              <span className="material-symbols-outlined text-base text-xl">+</span>
+              Agregar Receta
             </button>
           </header>
 
-          {/* buscador */}
+          {/* buscador (pendiente de implementar lógica) */}
           <div className="mb-6">
             <label className="block font-semibold mb-2">
               Buscar por nombre / DNI / código del paciente
@@ -96,38 +72,28 @@ export default function Recetas({ onLogout, onNavigate, user }) {
             />
           </div>
 
-          {/* layout principal */}
-          <div className="flex gap-8">
-
-            <section className="flex-1">
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {paginated.map((p) => (
-                  <RecipeCard
-                    key={p.id}
-                    patient={p}
-                    onView={() => console.log("ver", p)}
-                  />
-                ))}
-              </div>
-
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                onChange={setPage}
-              />
-            </section>
+          {/* tarjetas de recetas */}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {paginated.map((r) => (
+              <RecipeCard key={r.id} prescription={r} />
+            ))}
           </div>
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onChange={setPage}
+          />
         </main>
       </div>
 
-      {/* Modal para agregar paciente */}
+      {/* Modal para agregar receta */}
       {showModal && (
-        <AddPatientModal
+        <RecipeModal
           onClose={() => setShowModal(false)}
-          onSubmit={handleCreatePatient}
+          onSubmit={(data) => console.log("Enviar receta:", data)}
         />
       )}
     </>
   );
-
 }

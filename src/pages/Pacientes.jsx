@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import FilterPanel from "../components/Patients/FilterPanel";
 import PatientCard from "../components/Patients/PatientCard";
 import Pagination from "../components/Patients/Pagination";
-import AddPatientModal from "../components/modal/AddPatientModal";
+import RecipeModal from "../components/modal/RecipeModal";
 
 export default function Pacientes({ onLogout, onNavigate, user }) {
   const [showModal, setShowModal] = useState(false);
@@ -78,7 +78,7 @@ export default function Pacientes({ onLogout, onNavigate, user }) {
               className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded"
               onClick={() => setShowModal(true)}
             >
-              <span className="material-symbols-outlined text-base">add</span>
+              <span className="material-symbols-outlined text-base text-xl">+</span>
               Agregar Paciente
             </button>
           </header>
@@ -125,7 +125,7 @@ export default function Pacientes({ onLogout, onNavigate, user }) {
 
       {/* Modal para agregar paciente */}
       {showModal && (
-        <AddPatientModal
+        <RecipeModal
           onClose={() => setShowModal(false)}
           onSubmit={handleCreatePatient}
         />

@@ -1,31 +1,35 @@
-export default function RecipeCard() {
+export default function RecipeCard({ prescription }) {
+  const { patientName, patientDni, issuedAt, items } = prescription;
+
+  const formattedDate = new Date(issuedAt).toLocaleString("es-ES", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
   return (
     <div className="bg-teal-800 text-white p-4 rounded mb-6 shadow">
       <div className="flex justify-between items-start flex-wrap gap-4">
         <div>
-          <p className="font-semibold">
-            Paciente: Diego Alberto Salazar Garcia
-          </p>
-          <p className="text-sm">Identificación: 80888088</p>
+          <p className="font-semibold">Paciente: {patientName}</p>
+          <p className="text-sm">Identificación: {patientDni}</p>
         </div>
-        <p className="text-sm text-right">
-          11 abril, 2025 11:14:23 pm
-        </p>
+        <p className="text-sm text-right">{formattedDate}</p>
       </div>
 
       <div className="my-4 border-t border-white/40 pt-3 space-y-2">
-        <div>
-          <p className="font-semibold">Paracetamol 500 miligramos</p>
-          <p className="text-sm">
-            1 tableta, Vía oral, 2 veces al día. Por 30 días
-          </p>
-        </div>
-        <div>
-          <p className="font-semibold">Paracetamol 500 miligramos</p>
-          <p className="text-sm">
-            1 tableta, Vía oral, 2 veces al día. Por 30 días
-          </p>
-        </div>
+        {items.map((item, index) => (
+          <div key={index}>
+            <p className="font-semibold">{item.medication}</p>
+            <p className="text-sm">
+              {item.dosage}, {item.administration_route}. Por {item.duration_days} días
+            </p>
+          </div>
+        ))}
       </div>
 
       <div className="flex justify-end gap-4 mt-4">
