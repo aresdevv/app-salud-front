@@ -1,9 +1,9 @@
 import FormLogin from "../sections/Login/FormLogin";
 
-export function Login() {
+export function Login({ onLogin }) {
   return (
     <main className="bg-primary min-h-screen">
-      <FormLogin />
+      <FormLogin onLogin={onLogin} />
     </main>
   );
 }

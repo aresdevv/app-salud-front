@@ -1,13 +1,25 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Login } from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  const handleLogin = (credentials) => {
+    // Aquí puedes validar credenciales o hacer una petición a la API
+    setUser({ fullName: "Diego Salazar Garcia" }); // Simulación de usuario autenticado
+  };
+
+  const handleLogout = () => setUser(null);
+
   return (
     <>
-      <Login />
+      {user ? (
+        <Dashboard user={user} onLogout={handleLogout} />
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </>
   );
 }
