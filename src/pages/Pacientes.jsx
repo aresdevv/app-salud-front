@@ -36,7 +36,7 @@ export default function Pacientes() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
+      <Sidebar onLogout={onLogout} onNavigate={onNavigate} />
 
       <main className="flex-1 p-8">
         <header className="flex justify-between items-start mb-6">
