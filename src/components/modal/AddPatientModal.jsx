@@ -26,17 +26,17 @@ export default function AddPatientModal({ onClose, onSubmit }) {
       first_name: form.firstName,
       last_name: form.lastName,
       dni: form.dni,
-      birth_date: new Date(form.birthDate).toISOString(), // convierte a "YYYY-MM-DDTHH:mm:ssZ"
+      birth_date: new Date(form.birthDate).toISOString(), 
       gender: form.gender,
       address: form.address,
       phone: form.phone,
       email: form.email,
-      photo_url: "default", // fijo como en tu ejemplo
+      photo_url: "default", 
     };
 
     const res = await fetch("http://localhost:8080/api/patient", {
       method: "POST",
-      credentials: "include", // importante para pasar cookies
+      credentials: "include", 
       headers: {
         "Content-Type": "application/json",
       },
@@ -52,7 +52,7 @@ export default function AddPatientModal({ onClose, onSubmit }) {
     console.log("Paciente creado:", result);
 
     alert("Paciente creado exitosamente");
-    onClose(); // cerrar modal
+    onClose(); 
   } catch (error) {
     console.error("Error al crear paciente:", error);
     alert("Hubo un error al guardar el paciente");
@@ -62,10 +62,9 @@ export default function AddPatientModal({ onClose, onSubmit }) {
 
 return (
   <div className="fixed inset-0 z-50 flex items-center justify-center">
-    {/* Fondo difuminado y oscurecido */}
+
     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"></div>
 
-    {/* Modal con animación */}
     <div className="relative bg-white p-8 rounded w-[600px] shadow-lg animate-fadeIn">
 
       <h2 className="text-2xl font-bold mb-6 text-center">Agregar Paciente</h2>

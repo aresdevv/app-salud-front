@@ -3,6 +3,7 @@ import "./App.css";
 import { Login } from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
+import Recetas from "./pages/Recetas";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -26,6 +27,8 @@ function App() {
     content = <Dashboard user={user} onLogout={handleLogout} onNavigate={setPage} />;
   } else if (page === "pacientes") {
     content = <Pacientes user={user} onLogout={handleLogout} onNavigate={setPage} />;
+  } else if (page === "recetas") {
+    content = <Recetas user={user} onLogout={handleLogout} onNavigate={setPage} />;
   }
 
   return <>{content}</>;

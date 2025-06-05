@@ -12,7 +12,7 @@ export default function Sidebar({ onLogout, onNavigate }) {
         <button className={styles.item} onClick={() => onNavigate("pacientes")}>
           <FaUserInjured /> Pacientes
         </button>
-        <button className={styles.item} disabled>
+        <button className={styles.item} onClick={() => onNavigate("recetas")}>
           <FaPrescription /> Recetas
         </button>
       </nav>
