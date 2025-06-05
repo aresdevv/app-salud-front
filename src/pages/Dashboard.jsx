@@ -11,7 +11,7 @@ import QuickActions from '../components/QuickActions/QuickActions';
  * Vista principal tras el login.
  * Recibe el objeto `user` y la función `onLogout` desde App.jsx.
  */
-export default function Dashboard({ user, onLogout }) {
+export default function Dashboard({ user, onLogout, onNavigate }) {
   /* Ejemplo de datos simulados  ----------------------------- */
   const appointments = [
     { id: 1, time: '8:00 AM',  patient: 'Diego Salazar Garcia', status: 'Pendiente' },
@@ -44,10 +44,10 @@ export default function Dashboard({ user, onLogout }) {
   /* Render -------------------------------------------------- */
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <Sidebar onLogout={onLogout} />
+      <Sidebar onLogout={onLogout} onNavigate={onNavigate} />
 
       <main style={{ flex: 1, padding: '1.5rem 2.5rem', overflowY: 'auto' }}>
-        <TopBar user={user} />
+        <TopBar user={user} onNavigate={onNavigate} />
 
         {/* Cuerpo principal */}
         <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
@@ -76,4 +76,5 @@ Dashboard.propTypes = {
     fullName: PropTypes.string.isRequired,
   }).isRequired,
   onLogout: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func.isRequired,
 };
