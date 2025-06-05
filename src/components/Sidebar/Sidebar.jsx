@@ -12,7 +12,7 @@ export default function Sidebar({ onLogout }) {
         <a className={styles.item} href="#"><FaPrescription /> Recetas</a>
       </nav>
       <button className={styles.logout} onClick={onLogout}>
-        <FaSignOutAlt /> Cerrar Sesión
+          <FaSignOutAlt />Cerrar Sesión 
       </button>
     </aside>
   );
