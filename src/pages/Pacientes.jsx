@@ -4,6 +4,7 @@ import FilterPanel from "../components/Patients/FilterPanel";
 import PatientCard from "../components/Patients/PatientCard";
 import Pagination from "../components/Patients/Pagination";
 import RecipeModal from "../components/modal/RecipeModal";
+import AddPatientModal from "../components/modal/AddPatientModal";
 
 export default function Pacientes({ onLogout, onNavigate, user }) {
   const [showModal, setShowModal] = useState(false);
@@ -125,7 +126,7 @@ export default function Pacientes({ onLogout, onNavigate, user }) {
 
       {/* Modal para agregar paciente */}
       {showModal && (
-        <RecipeModal
+        <AddPatientModal
           onClose={() => setShowModal(false)}
           onSubmit={handleCreatePatient}
         />
