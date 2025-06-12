@@ -1,51 +1,51 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 // Componentes UI
-import Sidebar from '../components/Sidebar/Sidebar';
-import TopBar from '../components/TopBar/TopBar';
-import AppointmentsTimeline from '../components/Appointments/AppointmentsTimeline';
-import QuickActions from '../components/QuickActions/QuickActions';
+import Sidebar from "../components/Sidebar/Sidebar";
+import TopBar from "../components/TopBar/TopBar";
+import AppointmentsTimeline from "../components/Appointments/AppointmentsTimeline";
+import QuickActions from "../components/QuickActions/QuickActions";
 
 export default function Dashboard({ user, onLogout, onNavigate }) {
   const [appointments, setAppointments] = useState([]);
   const [notifications, setNotifications] = useState([
     {
       id: 1,
-      title: 'Alerta de Cita Médica',
-      body: 'Lorem viverra urna. elit. tortor. ex ipsum sollicitudin. nec elit. tincidunt lorem. ex placerat. Ut id ...',
+      title: "Alerta de Cita Médica",
+      body: "Lorem viverra urna. elit. tortor. ex ipsum sollicitudin. nec elit. tincidunt lorem. ex placerat. Ut id ...",
     },
     {
       id: 2,
-      title: 'Recordatorio de Examen',
-      body: 'Lorem viverra urna. elit. tortor. ex ipsum sollicitudin. nec elit. tincidunt lorem. ex placerat. Ut id ...',
+      title: "Recordatorio de Examen",
+      body: "Lorem viverra urna. elit. tortor. ex ipsum sollicitudin. nec elit. tincidunt lorem. ex placerat. Ut id ...",
     },
     {
       id: 3,
-      title: 'Nueva Cita Programada',
-      body: 'Lorem viverra urna. elit. tortor. ex ipsum sollicitudin. nec elit. tincidunt lorem. ex placerat. Ut id ...',
+      title: "Nueva Cita Programada",
+      body: "Lorem viverra urna. elit. tortor. ex ipsum sollicitudin. nec elit. tincidunt lorem. ex placerat. Ut id ...",
     },
   ]);
   const [fadingOut, setFadingOut] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/medicalAppointment', {
-      method: 'GET',
-      credentials: 'include',
+    fetch("http://localhost:8080/api/medicalAppointment", {
+      method: "GET",
+      credentials: "include",
     })
-      .then(async res => {
+      .then(async (res) => {
         if (!res.ok) {
           const errText = await res.text();
           throw new Error(`Error ${res.status}: ${errText}`);
         }
         return res.json();
       })
-      .then(data => {
-        const mapped = data.map(item => ({
+      .then((data) => {
+        const mapped = data.map((item) => ({
           id: item.appointment_id,
-          time: new Date(item.appintment_time).toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
+          time: new Date(item.appintment_time).toLocaleTimeString("es-ES", {
+            hour: "2-digit",
+            minute: "2-digit",
           }),
           patient: item.patient_name,
           status: item.status,
@@ -53,21 +53,21 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
         }));
         setAppointments(mapped);
       })
-      .catch(err => {
-        console.error('Error cargando citas:', err);
+      .catch((err) => {
+        console.error("Error cargando citas:", err);
       });
   }, []);
 
   const handleAcceptNotification = (id) => {
-    setFadingOut(prev => [...prev, id]);
+    setFadingOut((prev) => [...prev, id]);
     setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-      setFadingOut(prev => prev.filter(f => f !== id));
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      setFadingOut((prev) => prev.filter((f) => f !== id));
     }, 500);
   };
 
   const handleCreatePrescription = () => {
-    console.log('Crear receta');
+    console.log("Crear receta");
   };
 
   return (
@@ -78,21 +78,18 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
         <TopBar user={user} onNavigate={onNavigate} />
 
         <div className="flex flex-wrap gap-12">
-          <AppointmentsTimeline
-            date={new Date()}
-            appointments={appointments}
-          />
+          <AppointmentsTimeline date={new Date()} appointments={appointments} />
 
           <div className="flex-1">
             <h3 className="text-xl font-bold mb-4">Notificaciones</h3>
             {notifications.length === 0 ? (
               <p className="text-gray-500">No hay notificaciones.</p>
             ) : (
-              notifications.map(n => (
+              notifications.map((n) => (
                 <div
                   key={n.id}
                   className={`flex items-start gap-4 rounded-lg p-4 mb-4 bg-teal-700 text-white shadow transition-opacity duration-500 ${
-                    fadingOut.includes(n.id) ? 'opacity-0' : 'opacity-100'
+                    fadingOut.includes(n.id) ? "opacity-0" : "opacity-100"
                   }`}
                 >
                   {/* Icono */}
