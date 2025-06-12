@@ -1,110 +1,68 @@
 import { useState } from "react";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 export default function FilterPanel({ onApply, onClear }) {
-  const [gender, setGender] = useState({ M: false, F: false });
-  const [age, setAge] = useState([0, 100]);
-  const [disease, setDisease] = useState("");
-  const [center, setCenter] = useState("");
+  const [ageRange, setAgeRange] = useState([0, 100]);
+  const [gender, setGender] = useState("");
 
-  const handleRange = (index, value) => {
-    const next = [...age];
-    next[index] = Number(value);
-    setAge(next);
-  };
-
-  const clearAll = () => {
-    setGender({ M: false, F: false });
-    setAge([0, 100]);
-    setDisease("");
-    setCenter("");
-    onClear?.();
+  const handleApply = () => {
+    onApply({
+      minAge: ageRange[0],
+      maxAge: ageRange[1],
+      gender,
+    });
   };
 
   return (
-    <aside className="w-64 pr-6 border-r">
-      <h3 className="text-lg font-semibold mb-4">GÉNERO</h3>
-      <div className="flex items-center gap-2 mb-2">
-        <input
-          type="checkbox"
-          checked={gender.M}
-          onChange={(e) => setGender({ ...gender, M: e.target.checked })}
-        />
-        <span>Masculino</span>
-      </div>
-      <div className="flex items-center gap-2 mb-6">
-        <input
-          type="checkbox"
-          checked={gender.F}
-          onChange={(e) => setGender({ ...gender, F: e.target.checked })}
-        />
-        <span>Femenino</span>
-      </div>
+    <aside className="w-64 p-4 border rounded shadow">
+      <h2 className="font-semibold mb-4">Filtros</h2>
 
-      <h3 className="text-lg font-semibold mb-4">RANGO DE EDADES</h3>
-      <div className="flex flex-col gap-2 mb-6">
-        <input
-          type="range"
+      {/* Edad */}
+      <div className="mb-6">
+        <label className="block font-medium mb-2">Rango de Edad</label>
+        <Slider
+          range
           min={0}
           max={100}
-          value={age[0]}
-          onChange={(e) => handleRange(0, e.target.value)}
+          step={1}
+          value={ageRange}
+          onChange={setAgeRange}
         />
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={age[1]}
-          onChange={(e) => handleRange(1, e.target.value)}
-        />
-        <div className="flex gap-2">
-          <input
-            className="w-1/2 border p-1 rounded text-center"
-            value={age[0]}
-            readOnly
-          />
-          <input
-            className="w-1/2 border p-1 rounded text-center"
-            value={age[1]}
-            readOnly
-          />
+        <div className="text-sm mt-2">
+          {ageRange[0]} años - {ageRange[1]} años
         </div>
       </div>
 
-      <h3 className="text-lg font-semibold mb-2">ENFERMEDAD</h3>
-      <input
-        className="w-full border p-2 rounded mb-6"
-        placeholder="Diabetes"
-        value={disease}
-        onChange={(e) => setDisease(e.target.value)}
-      />
+      {/* Género */}
+      <div className="mb-6">
+        <label className="block font-medium mb-2">Género</label>
+        <select
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          className="w-full border rounded p-2"
+        >
+          <option value="">Todos</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+        </select>
+      </div>
 
-      <h3 className="text-lg font-semibold mb-2">CENTRO DE ATENCIÓN</h3>
-      <input
-        className="w-full border p-2 rounded mb-6"
-        placeholder="EsSalud"
-        value={center}
-        onChange={(e) => setCenter(e.target.value)}
-      />
-
-      <button
-        className="w-full bg-primary text-white py-2 rounded mb-3"
-        onClick={() =>
-          onApply?.({
-            gender,
-            age,
-            disease,
-            center,
-          })
-        }
-      >
-        APLICAR FILTROS
-      </button>
-      <button
-        className="w-full border border-gray-400 py-2 rounded"
-        onClick={clearAll}
-      >
-        ELIMINAR FILTROS
-      </button>
+      {/* Botones */}
+      <div className="flex gap-2">
+        <button
+          className="bg-primary text-white px-4 py-2 rounded"
+          onClick={handleApply}
+        >
+          Aplicar
+        </button>
+        <button
+          className="bg-gray-300 px-4 py-2 rounded"
+          onClick={onClear}
+        >
+          Limpiar
+        </button>
+      </div>
     </aside>
   );
 }
