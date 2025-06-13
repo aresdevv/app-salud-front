@@ -1,37 +1,40 @@
 import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import { Login } from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
 import Recetas from "./pages/Recetas";
+import InfoPaciente from "./pages/InfoPaciente";
+import CitasMedicas from "./pages/CitasMedicas";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [page, setPage] = useState("dashboard");
 
   const handleLogin = (credentials) => {
     setUser({ fullName: "Diego Salazar Garcia" });
   };
+
   const handleLogout = () => {
     setUser(null);
-    setPage("dashboard");
   };
 
-  // Renderizado condicional según la página
+  // Si no hay usuario, redirigir al login
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
 
-  let content;
-  if (page === "dashboard") {
-    content = <Dashboard user={user} onLogout={handleLogout} onNavigate={setPage} />;
-  } else if (page === "pacientes") {
-    content = <Pacientes user={user} onLogout={handleLogout} onNavigate={setPage} />;
-  } else if (page === "recetas") {
-    content = <Recetas user={user} onLogout={handleLogout} onNavigate={setPage} />;
-  }
-
-  return <>{content}</>;
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard user={user} onLogout={handleLogout} />} />
+      <Route path="/dashboard" element={<Dashboard user={user} onLogout={handleLogout} />} />
+      <Route path="/pacientes" element={<Pacientes user={user} onLogout={handleLogout} />} />
+      <Route path="/paciente/:id" element={<InfoPaciente user={user} onLogout={handleLogout} />} />
+      <Route path="/recetas" element={<Recetas user={user} onLogout={handleLogout} />} />
+      <Route path="/citas" element={<CitasMedicas user={user} onLogout={handleLogout} />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
 }
 
 export default App;

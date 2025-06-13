@@ -5,12 +5,14 @@ import PatientCard from "../components/Patients/PatientCard";
 import Pagination from "../components/Patients/Pagination";
 import RecipeModal from "../components/modal/RecipeModal";
 import AddPatientModal from "../components/modal/AddPatientModal";
+import { useNavigate } from "react-router-dom";
 
-export default function Pacientes({ onLogout, onNavigate, user }) {
+export default function Pacientes({ onLogout, user }) {
   const [showModal, setShowModal] = useState(false);
   const [patients, setPatients] = useState([]);
   const [page, setPage] = useState(1);
   const perPage = 6;
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:8080/api/patient", {
@@ -69,7 +71,7 @@ export default function Pacientes({ onLogout, onNavigate, user }) {
   return (
     <>
       <div className="flex min-h-screen">
-        <Sidebar onLogout={onLogout} onNavigate={onNavigate} />
+        <Sidebar onLogout={onLogout} />
 
         <main className="flex-1 p-8">
           <header className="flex justify-between items-start mb-6">
@@ -109,7 +111,7 @@ export default function Pacientes({ onLogout, onNavigate, user }) {
                   <PatientCard
                     key={p.id}
                     patient={p}
-                    onView={() => console.log("ver", p)}
+                    onView={() => navigate(`/paciente/${p.id}`)}
                   />
                 ))}
               </div>

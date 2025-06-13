@@ -1,20 +1,38 @@
 import styles from './Sidebar.module.css';
-import { FaTachometerAlt, FaUserInjured, FaPrescription, FaSignOutAlt } from 'react-icons/fa';
+import { FaTachometerAlt, FaUserInjured, FaPrescription, FaSignOutAlt, FaCalendarAlt } from 'react-icons/fa';
+import { Link, useLocation } from 'react-router-dom';
 
-export default function Sidebar({ onLogout, onNavigate }) {
+export default function Sidebar({ onLogout }) {
+  const location = useLocation();
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo} />
       <nav className={styles.menu}>
-        <button className={styles.item} onClick={() => onNavigate("dashboard")}>
+        <Link 
+          to="/dashboard" 
+          className={`${styles.item} ${location.pathname === '/dashboard' ? styles.active : ''}`}
+        >
           <FaTachometerAlt /> Dashboard
-        </button>
-        <button className={styles.item} onClick={() => onNavigate("pacientes")}>
+        </Link>
+        <Link 
+          to="/pacientes" 
+          className={`${styles.item} ${location.pathname === '/pacientes' ? styles.active : ''}`}
+        >
           <FaUserInjured /> Pacientes
-        </button>
-        <button className={styles.item} onClick={() => onNavigate("recetas")}>
+        </Link>
+        <Link 
+          to="/citas" 
+          className={`${styles.item} ${location.pathname === '/citas' ? styles.active : ''}`}
+        >
+          <FaCalendarAlt /> Citas
+        </Link>
+        <Link 
+          to="/recetas" 
+          className={`${styles.item} ${location.pathname === '/recetas' ? styles.active : ''}`}
+        >
           <FaPrescription /> Recetas
-        </button>
+        </Link>
       </nav>
       <button className={styles.logout} onClick={onLogout}>
         <FaSignOutAlt />Cerrar Sesión 
