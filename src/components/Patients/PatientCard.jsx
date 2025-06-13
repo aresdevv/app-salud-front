@@ -14,7 +14,7 @@ export default function PatientCard({ patient, onView }) {
         {patient.lastVisit}
       </p>
       <button
-        className="bg-white text-primary font-semibold rounded py-1 mt-auto"
+        className="bg-white text-primary font-semibold rounded py-1 mt-auto cursor-pointer"
         onClick={() => onView?.(patient)}
       >
         Ver Perfil
