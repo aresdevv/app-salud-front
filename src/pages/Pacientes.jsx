@@ -11,13 +11,38 @@ export default function Pacientes({ onLogout, user }) {
   const [showModal, setShowModal] = useState(false);
   const [patients, setPatients] = useState([]);
   const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({});
+  const [totalPages, setTotalPages] = useState(1);
   const perPage = 6;
   const navigate = useNavigate();
 
+  function buildUrl() {
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("limit", perPage);
+
+    params.append("minAge", filters.minAge ?? 0);
+    params.append("maxAge", filters.maxAge ?? 0);
+
+    if (typeof filters.name === "string" && filters.name.trim()) {
+      params.append("name", filters.name.trim());
+    }
+
+    if (typeof filters.gender === "string" && filters.gender.trim()) {
+      params.append("gender", filters.gender.trim());
+    }
+
+    const url = `http://localhost:8080/api/patient?${params.toString()}`;
+    console.log("🔍 URL generada:", url);
+    return url;
+  }
+
+
   useEffect(() => {
-    fetch("http://localhost:8080/api/patient", {
+    const url = buildUrl();
+    fetch(url, {
       method: "GET",
-      credentials: "include", 
+      credentials: "include",
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -27,27 +52,26 @@ export default function Pacientes({ onLogout, user }) {
         return res.json();
       })
       .then((data) => {
-        // Mapear a formato esperado por PatientCard
-        const mapped = data.map((p) => ({
-          id: p.patient_id,
-          fullName: p.full_name,
-          age: p.age,
-          gender: p.gender === "M" ? "Masculino" : "Femenino",
-          lastVisit: "Hace poco", // puedes reemplazar esto si tienes un campo real
-        }));
-        setPatients(mapped);
+        console.log("✅ Datos recibidos:", data);
+
+        setPatients(
+          (Array.isArray(data) ? data : []).map((p) => ({
+            id: p.patient_id,
+            fullName: p.full_name,
+            age: p.age,
+            gender: p.gender === "M" ? "Masculino" : "Femenino",
+            lastVisit: "Hace poco",
+          }))
+        );
+
+        setTotalPages(1); // Ajusta si tu backend envía este dato
       })
       .catch((err) => {
         console.error("Error al cargar pacientes:", err);
       });
-  }, []);
+  }, [page, filters]);
 
-  const filtered = patients; // puedes conectar esto con el buscador y filtros
-  const totalPages = Math.ceil(filtered.length / perPage);
-  const paginated = filtered.slice((page - 1) * perPage, page * perPage);
   const handleCreatePatient = (newPatient) => {
-    console.log("Enviar al backend:", newPatient);
-
     fetch("http://localhost:8080/api/patient", {
       method: "POST",
       credentials: "include",
@@ -62,12 +86,32 @@ export default function Pacientes({ onLogout, user }) {
       })
       .then((data) => {
         alert("Paciente registrado con éxito");
+        setPage(1);
+        setFilters({});
       })
       .catch((err) => {
         console.error(err);
         alert("Hubo un error al guardar");
       });
   };
+
+  const handleApplyFilters = (data) => {
+    console.log("🧪 Filtros aplicados:", data);
+    setFilters({
+      minAge: data.minAge ?? 0,
+      maxAge: data.maxAge ?? 0,
+      name: data.name ?? "",
+      gender: data.gender ?? "",
+    });
+    setPage(1);
+  };
+
+  const handleClearFilters = () => {
+    console.log("🧹 Filtros limpiados");
+    setFilters({});
+    setPage(1);
+  };
+
   return (
     <>
       <div className="flex min-h-screen">
@@ -76,7 +120,6 @@ export default function Pacientes({ onLogout, user }) {
         <main className="flex-1 p-8">
           <header className="flex justify-between items-start mb-6">
             <h1 className="text-2xl font-bold">Lista de Pacientes</h1>
-
             <button
               className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded"
               onClick={() => setShowModal(true)}
@@ -86,7 +129,6 @@ export default function Pacientes({ onLogout, user }) {
             </button>
           </header>
 
-          {/* buscador */}
           <div className="mb-6">
             <label className="block font-semibold mb-2">
               Buscar por nombre / DNI / código del paciente
@@ -95,19 +137,21 @@ export default function Pacientes({ onLogout, user }) {
               type="text"
               placeholder="Diego Alberto Salazar..."
               className="w-full border rounded p-2"
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, name: e.target.value }))
+              }
             />
           </div>
 
-          {/* layout principal */}
           <div className="flex gap-8">
             <FilterPanel
-              onApply={(data) => console.log("filtrar con:", data)}
-              onClear={() => console.log("limpiar filtros")}
+              onApply={handleApplyFilters}
+              onClear={handleClearFilters}
             />
 
             <section className="flex-1">
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {paginated.map((p) => (
+                {patients.map((p) => (
                   <PatientCard
                     key={p.id}
                     patient={p}
@@ -126,7 +170,6 @@ export default function Pacientes({ onLogout, user }) {
         </main>
       </div>
 
-      {/* Modal para agregar paciente */}
       {showModal && (
         <AddPatientModal
           onClose={() => setShowModal(false)}
@@ -135,5 +178,4 @@ export default function Pacientes({ onLogout, user }) {
       )}
     </>
   );
-
 }
