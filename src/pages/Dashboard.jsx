@@ -29,7 +29,7 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
   const [fadingOut, setFadingOut] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/medicalAppointment", {
+    fetch("https://app-salud-back.onrender.com/api/medicalAppointment/today", {
       method: "GET",
       credentials: "include",
     })
