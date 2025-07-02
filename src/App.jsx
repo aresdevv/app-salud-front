@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import { Login } from "./pages/Login";
@@ -11,15 +11,23 @@ import CitasMedicas from "./pages/CitasMedicas";
 function App() {
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Aquí puedes decodificar el token para obtener la información del usuario si es necesario
+      setUser({ token });
+    }
+  }, []);
+
   const handleLogin = (credentials) => {
-    setUser({ fullName: "Diego Salazar Garcia" });
+    setUser(credentials);
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     setUser(null);
   };
 
-  // Si no hay usuario, redirigir al login
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }

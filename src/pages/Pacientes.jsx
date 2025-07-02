@@ -6,8 +6,9 @@ import Pagination from "../components/Patients/Pagination";
 import RecipeModal from "../components/modal/RecipeModal";
 import AddPatientModal from "../components/modal/AddPatientModal";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
 
-export default function Pacientes({ onLogout, user }) {
+export default function Pacientes({ onLogout }) {
   const [showModal, setShowModal] = useState(false);
   const [patients, setPatients] = useState([]);
   const [page, setPage] = useState(1);
@@ -32,7 +33,7 @@ export default function Pacientes({ onLogout, user }) {
       params.append("gender", filters.gender.trim());
     }
 
-    const url = `http://localhost:8080/api/patient?${params.toString()}`;
+    const url = `${import.meta.env.VITE_API_URL}/patient?${params.toString()}`;
     console.log("🔍 URL generada:", url);
     return url;
   }
@@ -40,17 +41,7 @@ export default function Pacientes({ onLogout, user }) {
 
   useEffect(() => {
     const url = buildUrl();
-    fetch(url, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Error ${res.status}: ${text}`);
-        }
-        return res.json();
-      })
+    api.get(url)
       .then((data) => {
         console.log("✅ Datos recibidos:", data);
 
@@ -69,22 +60,11 @@ export default function Pacientes({ onLogout, user }) {
       .catch((err) => {
         console.error("Error al cargar pacientes:", err);
       });
-  }, [page, filters]);
+  }, [page, filters, buildUrl]);
 
   const handleCreatePatient = (newPatient) => {
-    fetch("http://localhost:8080/api/patient", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newPatient),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al guardar paciente");
-        return res.json();
-      })
-      .then((data) => {
+    api.post("/patient", newPatient)
+      .then(() => {
         alert("Paciente registrado con éxito");
         setPage(1);
         setFilters({});

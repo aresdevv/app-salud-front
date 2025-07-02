@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import api from "../api";
 
 // Componentes UI
 import Sidebar from "../components/Sidebar/Sidebar";
 import TopBar from "../components/TopBar/TopBar";
 import AppointmentsTimeline from "../components/Appointments/AppointmentsTimeline";
 import QuickActions from "../components/QuickActions/QuickActions";
-
+import SidebarAdmin from "../components/Sidebar/SidebarAdmin";
 export default function Dashboard({ user, onLogout, onNavigate }) {
   const [appointments, setAppointments] = useState([]);
   const [notifications, setNotifications] = useState([
@@ -29,17 +30,7 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
   const [fadingOut, setFadingOut] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/medicalAppointment", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(`Error ${res.status}: ${errText}`);
-        }
-        return res.json();
-      })
+    api.get("/medicalAppointment")
       .then((data) => {
         const mapped = data.map((item) => ({
           id: item.appointment_id,
@@ -66,13 +57,23 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
     }, 500);
   };
 
+  function getSidebarComponent(user, props) {
+    if (user.id === 1) {
+      return <SidebarAdmin {...props} />;
+    }
+    // Ejemplo: para id 2, otro sidebar
+    // if (user.id === 2) return <SidebarDoctor {...props} />;
+    // Por defecto
+    return <Sidebar {...props} />;
+  }
+  
   const handleCreatePrescription = () => {
     console.log("Crear receta");
   };
 
   return (
     <div className="flex h-screen">
-      <Sidebar onLogout={onLogout} onNavigate={onNavigate} />
+      {getSidebarComponent(user, { onLogout, onNavigate })}
 
       <main className="flex-1 p-6 overflow-y-auto">
         <TopBar user={user} onNavigate={onNavigate} />

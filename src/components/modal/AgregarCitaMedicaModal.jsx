@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import api from "../../api";
 
 export default function AgregarCitaMedicaModal({ onClose, onCreated, user }) {
   const modalRef = useRef(null);
@@ -46,16 +47,7 @@ export default function AgregarCitaMedicaModal({ onClose, onCreated, user }) {
         patient_id: parseInt(form.patientId),
         reason: form.reason
       };
-      const res = await fetch("http://localhost:8080/api/medicalappointment", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
-      }
+      await api.post("/medicalappointment", payload);
       if (onCreated) onCreated();
       onClose();
     } catch (err) {

@@ -3,8 +3,9 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import Pagination from "../components/Patients/Pagination";
 import RecipeModal from "../components/modal/RecipeModal";
 import RecipeCard from "../components/recipe/RecipeCard";
+import api from "../api";
 
-export default function Recetas({ onLogout, user }) {
+export default function Recetas({ onLogout }) {
   const [showModal, setShowModal] = useState(false);
   const [prescriptions, setPrescriptions] = useState([]);
   const [page, setPage] = useState(1);
@@ -12,17 +13,7 @@ export default function Recetas({ onLogout, user }) {
   const perPage = 6;
 
   const fetchPrescriptions = () => {
-    fetch("http://localhost:8080/api/prescription", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Error ${res.status}: ${text}`);
-        }
-        return res.json();
-      })
+    api.get("/prescription")
       .then((data) => {
         const mapped = data.map((r) => ({
           id: r.prescription_id,
@@ -45,20 +36,7 @@ export default function Recetas({ onLogout, user }) {
 
   const handleCreatePrescription = async (data) => {
     try {
-      const response = await fetch("http://localhost:8080/api/prescription", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al crear la receta');
-      }
-
+      await api.post("/prescription", data);
       alert("Receta creada exitosamente");
       setShowModal(false);
       fetchPrescriptions();

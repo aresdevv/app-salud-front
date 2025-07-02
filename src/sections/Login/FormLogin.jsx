@@ -2,6 +2,7 @@ import InputLogin from "../../components/Login/InputLogin";
 import UserIcon from "../../Icons/UserIcon";
 import { useState } from "react";
 
+
 export default function FormLogin({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +15,7 @@ export default function FormLogin({ onLogin }) {
     setResponseMessage(null);
 
     try {
-      const res = await fetch('http://localhost:8080/api/login', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -27,8 +28,16 @@ export default function FormLogin({ onLogin }) {
       }
 
       const data = await res.json();
-      setResponseMessage(`Login exitoso. Usuario: ${data.email}`);
-      onLogin({ fullName: data.fullName || data.email }); // Llama a onLogin para actualizar el estado global
+      console.log("Respuesta del backend:", data);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        // const decoded = jwtDecode(data.token);
+        // console.log("🔑 Token decodificado:", decoded);
+        setResponseMessage(`Login exitoso. Usuario: ${data.email}`);
+        onLogin({ fullName: data.fullName || data.email, id: data.id, token: data.token }); 
+      } else {
+        throw new Error('No se recibió el token de autenticación.');
+      } 
     } catch (err) {
       setResponseMessage(`Error: ${err.message}`);
     } finally {

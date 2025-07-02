@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import AgregarCitaMedicaModal from "../components/modal/AgregarCitaMedicaModal";
+import api from "../api";
 
 const horas = [
   "9 AM", "10 AM", "11 AM", "12 AM", "1 PM", "2 PM"
@@ -48,15 +49,8 @@ export default function CitasMedicas({ onLogout, user }) {
 
   const fetchAppointments = async () => {
     try {
-      const url = `http://localhost:8080/api/medicalappointment?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
-      const res = await fetch(url, {
-        credentials: "include",
-      });
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || "Error al cargar citas");
-      }
-      const data = await res.json();
+      const url = `/medicalappointment?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
+      const data = await api.get(url);
       setAppointments(data);
     } catch (err) {
       setError(err.message);
@@ -121,7 +115,7 @@ export default function CitasMedicas({ onLogout, user }) {
         <div className="mb-4">
           <h3 className="font-semibold mb-2">Citas de la semana</h3>
           {/* Si hay error, se registra en consola pero no se muestra al usuario */}
-          {/* error && <div className="text-red-600 mb-2">{error}</div> */}
+          {error && <div className="text-red-600 mb-2">{error}</div>}
           {/* Lista de citas de la semana actual */}
           <ul className="divide-y divide-gray-300 bg-white rounded-lg shadow mb-4">
             {appointments.map((a) => {

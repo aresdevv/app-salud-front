@@ -1,6 +1,6 @@
 import styles from './TopBar.module.css';
 
-export default function TopBar({ user, onNavigate }) {
+export default function TopBar({ user }) {
   return (
     <header className={styles.topbar}>
       <div className={styles.avatar} />

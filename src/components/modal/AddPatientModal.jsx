@@ -1,3 +1,4 @@
+import api from "../../api";
 import { useState } from "react";
 
 export default function AddPatientModal({ onClose, onSubmit }) {
@@ -13,7 +14,7 @@ export default function AddPatientModal({ onClose, onSubmit }) {
   });
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -36,21 +37,7 @@ export default function AddPatientModal({ onClose, onSubmit }) {
 
       console.log("📦 Datos a enviar:", payload); // 👈 CONSOLE.LOG AQUÍ
 
-      const res = await fetch("http://localhost:8080/api/patient", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Error ${res.status}: ${err}`);
-      }
-
-      const result = await res.json();
+      const result = await api.post("/patient", payload);
       console.log("Paciente creado:", result);
       alert("Paciente creado exitosamente");
       onClose();
