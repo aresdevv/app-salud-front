@@ -183,6 +183,7 @@ export default function AddPatientModal({ onClose, onSubmit }) {
             Cancelar
           </button>
           <button
+            type="button"
             className="bg-teal-700 text-white px-4 py-2 rounded"
             onClick={handleSubmit}
           >
