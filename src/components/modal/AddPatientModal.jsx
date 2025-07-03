@@ -20,45 +20,22 @@ export default function AddPatientModal({ onClose, onSubmit }) {
     }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      const payload = {
-        first_name: form.firstName,
-        last_name: form.lastName,
-        dni: form.dni,
-        birth_date: new Date(form.birthDate).toISOString(),
-        gender: form.gender,
-        address: form.address,
-        phone: form.phone,
-        email: form.email,
-        photo_url: "default",
-      };
+  const handleSubmit = () => {
+    const payload = {
+      first_name: form.firstName,
+      last_name: form.lastName,
+      dni: form.dni,
+      birth_date: new Date(form.birthDate).toISOString(),
+      gender: form.gender,
+      address: form.address,
+      phone: form.phone,
+      email: form.email,
+      photo_url: "default",
+    };
 
-      console.log("📦 Datos a enviar:", payload); // 👈 CONSOLE.LOG AQUÍ
-
-      const res = await fetch(`${API_URL}/api/patient`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Error ${res.status}: ${err}`);
-      }
-
-      const result = await res.json();
-      console.log("Paciente creado:", result);
-      alert("Paciente creado exitosamente");
-      onClose();
-      onSubmit(result);
-    } catch (error) {
-      console.error("Error al crear paciente:", error);
-      alert("Hubo un error al guardar el paciente");
-    }
+    console.log("📦 Datos a enviar:", payload);
+    onSubmit(payload); // solo enviar datos al padre
+    onClose();
   };
 
   return (
