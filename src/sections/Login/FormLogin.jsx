@@ -1,7 +1,7 @@
 import InputLogin from "../../components/Login/InputLogin";
 import UserIcon from "../../Icons/UserIcon";
 import { useState } from "react";
-
+const API_URL = import.meta.env.VITE_URL;
 export default function FormLogin({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +14,7 @@ export default function FormLogin({ onLogin }) {
     setResponseMessage(null);
 
     try {
-      const res = await fetch('http://localhost:8080/api/login', {
+      const res = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

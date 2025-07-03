@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-
+const API_URL = import.meta.env.VITE_URL;
 export default function AgregarCitaMedicaModal({ onClose, onCreated, user }) {
   const modalRef = useRef(null);
   const [form, setForm] = useState({
@@ -46,7 +46,7 @@ export default function AgregarCitaMedicaModal({ onClose, onCreated, user }) {
         patient_id: parseInt(form.patientId),
         reason: form.reason
       };
-      const res = await fetch("http://localhost:8080/api/medicalappointment", {
+      const res = await fetch(`${API_URL}/api/medicalappointment`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

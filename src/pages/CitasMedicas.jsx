@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import AgregarCitaMedicaModal from "../components/modal/AgregarCitaMedicaModal";
-
+const API_URL = import.meta.env.VITE_URL;
 const horas = [
   "9 AM", "10 AM", "11 AM", "12 AM", "1 PM", "2 PM"
 ];
@@ -48,7 +48,7 @@ export default function CitasMedicas({ onLogout, user }) {
 
   const fetchAppointments = async () => {
     try {
-      const url = `http://localhost:8080/api/medicalappointment?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
+      const url = `${API_URL}/api/medicalappointment?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
       const res = await fetch(url, {
         credentials: "include",
       });

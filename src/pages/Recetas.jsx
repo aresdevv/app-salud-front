@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import Pagination from "../components/Patients/Pagination";
 import RecipeModal from "../components/modal/RecipeModal";
 import RecipeCard from "../components/recipe/RecipeCard";
-
+const API_URL = import.meta.env.VITE_URL;
 export default function Recetas({ onLogout, user }) {
   const [showModal, setShowModal] = useState(false);
   const [prescriptions, setPrescriptions] = useState([]);
@@ -12,7 +12,7 @@ export default function Recetas({ onLogout, user }) {
   const perPage = 6;
 
   const fetchPrescriptions = () => {
-    fetch("http://localhost:8080/api/prescription", {
+    fetch(`${API_URL}/api/prescription`, {
       method: "GET",
       credentials: "include",
     })
@@ -45,7 +45,7 @@ export default function Recetas({ onLogout, user }) {
 
   const handleCreatePrescription = async (data) => {
     try {
-      const response = await fetch("http://localhost:8080/api/prescription", {
+      const response = await fetch(`${API_URL}/api/prescription`, {
         method: "POST",
         credentials: "include",
         headers: {

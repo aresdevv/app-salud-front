@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_URL;
 const TABS = [
   "Diagnósticos",
   "Tratamientos",
@@ -26,7 +26,7 @@ export default function InfoPaciente({ onLogout, user }) {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/patient/${id}`, {
+        const response = await fetch(`${API_URL}/api/patient/${id}`, {
           credentials: "include",
         });
         if (!response.ok) {
@@ -41,7 +41,7 @@ export default function InfoPaciente({ onLogout, user }) {
 
     const fetchDiagnoses = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/diagnosis/${id}`, {
+        const response = await fetch(`${API_URL}/api/diagnosis/${id}`, {
           credentials: "include",
         });
         if (!response.ok) throw new Error('Error al cargar diagnósticos');
@@ -54,7 +54,7 @@ export default function InfoPaciente({ onLogout, user }) {
 
     const fetchTreatments = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/treatment/patient/${id}`, {
+        const response = await fetch(`${API_URL}/api/treatment/patient/${id}`, {
           credentials: "include",
         });
         if (!response.ok) throw new Error('Error al cargar tratamientos');
@@ -67,7 +67,7 @@ export default function InfoPaciente({ onLogout, user }) {
 
     const fetchLabResults = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/labresult/patient/${id}`, {
+        const response = await fetch(`${API_URL}/api/labresult/patient/${id}`, {
           credentials: "include",
         });
         if (!response.ok) throw new Error('Error al cargar resultados de laboratorio');
@@ -80,7 +80,7 @@ export default function InfoPaciente({ onLogout, user }) {
 
     const fetchVaccines = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/vaccine/patient/${id}`, {
+        const response = await fetch(`${API_URL}/api/vaccine/patient/${id}`, {
           credentials: "include",
         });
         if (!response.ok) throw new Error('Error al cargar vacunas');
@@ -93,7 +93,7 @@ export default function InfoPaciente({ onLogout, user }) {
 
     const fetchMedicalHistory = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/medicalhistory/patient/${id}`, {
+        const response = await fetch(`${API_URL}/api/medicalhistory/patient/${id}`, {
           credentials: "include",
         });
         if (!response.ok) throw new Error('Error al cargar antecedentes médicos');

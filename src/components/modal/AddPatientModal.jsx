@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+const API_URL = import.meta.env.VITE_URL;
 export default function AddPatientModal({ onClose, onSubmit }) {
   const [form, setForm] = useState({
     dni: "",
@@ -36,7 +36,7 @@ export default function AddPatientModal({ onClose, onSubmit }) {
 
       console.log("📦 Datos a enviar:", payload); // 👈 CONSOLE.LOG AQUÍ
 
-      const res = await fetch("http://localhost:8080/api/patient", {
+      const res = await fetch(`${API_URL}/api/patient`, {
         method: "POST",
         credentials: "include",
         headers: {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
+const API_URL = import.meta.env.VITE_URL;
 // Componentes UI
 import Sidebar from "../components/Sidebar/Sidebar";
 import TopBar from "../components/TopBar/TopBar";
@@ -29,7 +29,7 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
   const [fadingOut, setFadingOut] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/medicalAppointment", {
+    fetch(`${API_URL}/api/medicalappointment`, {
       method: "GET",
       credentials: "include",
     })

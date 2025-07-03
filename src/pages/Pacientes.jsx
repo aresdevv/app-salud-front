@@ -6,7 +6,7 @@ import Pagination from "../components/Patients/Pagination";
 import RecipeModal from "../components/modal/RecipeModal";
 import AddPatientModal from "../components/modal/AddPatientModal";
 import { useNavigate } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_URL;
 export default function Pacientes({ onLogout, user }) {
   const [showModal, setShowModal] = useState(false);
   const [patients, setPatients] = useState([]);
@@ -32,7 +32,7 @@ export default function Pacientes({ onLogout, user }) {
       params.append("gender", filters.gender.trim());
     }
 
-    const url = `http://localhost:8080/api/patient?${params.toString()}`;
+    const url = `${API_URL}/api/patient?${params.toString()}`;
     console.log("🔍 URL generada:", url);
     return url;
   }
@@ -72,7 +72,7 @@ export default function Pacientes({ onLogout, user }) {
   }, [page, filters]);
 
   const handleCreatePatient = (newPatient) => {
-    fetch("http://localhost:8080/api/patient", {
+    fetch(`${API_URL}/api/patient`, {
       method: "POST",
       credentials: "include",
       headers: {

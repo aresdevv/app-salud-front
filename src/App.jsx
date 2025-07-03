@@ -11,8 +11,8 @@ import CitasMedicas from "./pages/CitasMedicas";
 function App() {
   const [user, setUser] = useState(null);
 
-  const handleLogin = (credentials) => {
-    setUser({ fullName: "Diego Salazar Garcia" });
+  const handleLogin = (userData) => {
+    setUser(userData); 
   };
 
   const handleLogout = () => {
