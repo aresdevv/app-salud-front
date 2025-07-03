@@ -28,7 +28,7 @@ export default function FormLogin({ onLogin }) {
 
       const data = await res.json();
       setResponseMessage(`Login exitoso. Usuario: ${data.email}`);
-      onLogin({ fullName: data.fullName || data.email }); // Llama a onLogin para actualizar el estado global
+      onLogin(data); // Llama a onLogin para actualizar el estado global
     } catch (err) {
       setResponseMessage(`Error: ${err.message}`);
     } finally {

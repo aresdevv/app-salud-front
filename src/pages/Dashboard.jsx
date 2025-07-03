@@ -29,7 +29,7 @@ export default function Dashboard({ user, onLogout, onNavigate }) {
   const [fadingOut, setFadingOut] = useState([]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/medicalappointment`, {
+    fetch(`${API_URL}/api/medicalappointment/today`, {
       method: "GET",
       credentials: "include",
     })
