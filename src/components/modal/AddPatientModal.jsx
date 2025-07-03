@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddPatientModal({ onClose }) {
+export default function AddPatientModal({ onClose, onSubmit }) {
   const [form, setForm] = useState({
     dni: "",
     firstName: "",
@@ -36,7 +36,7 @@ export default function AddPatientModal({ onClose }) {
 
       console.log("📦 Datos a enviar:", payload); // 👈 CONSOLE.LOG AQUÍ
 
-      const res = await fetch("https://app-salud-back.onrender.com/api/patient", {
+      const res = await fetch("http://localhost:8080/api/patient", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -53,7 +53,8 @@ export default function AddPatientModal({ onClose }) {
       const result = await res.json();
       console.log("Paciente creado:", result);
       alert("Paciente creado exitosamente");
-      onClose();;
+      onClose();
+      onSubmit(result);
     } catch (error) {
       console.error("Error al crear paciente:", error);
       alert("Hubo un error al guardar el paciente");

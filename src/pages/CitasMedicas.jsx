@@ -48,7 +48,7 @@ export default function CitasMedicas({ onLogout, user }) {
 
   const fetchAppointments = async () => {
     try {
-      const url = `https://app-salud-back.onrender.com/api/medicalappointment?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
+      const url = `http://localhost:8080/api/medicalappointment?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
       const res = await fetch(url, {
         credentials: "include",
       });

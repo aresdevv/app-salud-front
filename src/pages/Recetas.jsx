@@ -12,7 +12,7 @@ export default function Recetas({ onLogout, user }) {
   const perPage = 6;
 
   const fetchPrescriptions = () => {
-    fetch("https://app-salud-back.onrender.com/api/prescription", {
+    fetch("http://localhost:8080/api/prescription", {
       method: "GET",
       credentials: "include",
     })
@@ -45,7 +45,7 @@ export default function Recetas({ onLogout, user }) {
 
   const handleCreatePrescription = async (data) => {
     try {
-      const response = await fetch("https://app-salud-back.onrender.com/api/prescription", {
+      const response = await fetch("http://localhost:8080/api/prescription", {
         method: "POST",
         credentials: "include",
         headers: {

@@ -46,7 +46,7 @@ export default function AgregarCitaMedicaModal({ onClose, onCreated, user }) {
         patient_id: parseInt(form.patientId),
         reason: form.reason
       };
-      const res = await fetch("https://app-salud-back.onrender.com/api/medicalappointment", {
+      const res = await fetch("http://localhost:8080/api/medicalappointment", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

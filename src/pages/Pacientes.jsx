@@ -32,7 +32,7 @@ export default function Pacientes({ onLogout, user }) {
       params.append("gender", filters.gender.trim());
     }
 
-    const url = `https://app-salud-back.onrender.com/api/patient?${params.toString()}`;
+    const url = `http://localhost:8080/api/patient?${params.toString()}`;
     console.log("🔍 URL generada:", url);
     return url;
   }
@@ -70,6 +70,30 @@ export default function Pacientes({ onLogout, user }) {
         console.error("Error al cargar pacientes:", err);
       });
   }, [page, filters]);
+
+  const handleCreatePatient = (newPatient) => {
+    fetch("http://localhost:8080/api/patient", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPatient),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Error al guardar paciente");
+        return res.json();
+      })
+      .then((data) => {
+        alert("Paciente registrado con éxito");
+        setPage(1);
+        setFilters({});
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Hubo un error al guardar");
+      });
+  };
 
   const handleApplyFilters = (data) => {
     console.log("🧪 Filtros aplicados:", data);
@@ -149,6 +173,7 @@ export default function Pacientes({ onLogout, user }) {
       {showModal && (
         <AddPatientModal
           onClose={() => setShowModal(false)}
+          onSubmit={handleCreatePatient}
         />
       )}
     </>
