@@ -1,6 +1,6 @@
 import { useState } from "react";
 const API_URL = import.meta.env.VITE_URL;
-export default function AddPatientModal({ onClose, onSubmit }) {
+export default function AddPatientModal({ onClose, onSubmit, isSubmitting }) {
   const [form, setForm] = useState({
     dni: "",
     firstName: "",
@@ -35,7 +35,6 @@ export default function AddPatientModal({ onClose, onSubmit }) {
 
     console.log("📦 Datos a enviar:", payload);
     onSubmit(payload); // solo enviar datos al padre
-    onClose();
   };
 
   return (
@@ -161,10 +160,11 @@ export default function AddPatientModal({ onClose, onSubmit }) {
           </button>
           <button
             type="button"
-            className="bg-teal-700 text-white px-4 py-2 rounded"
+            className="bg-teal-700 text-white px-4 py-2 rounded disabled:opacity-50"
             onClick={handleSubmit}
+            disabled={isSubmitting}
           >
-            Aceptar
+            {isSubmitting ? "Guardando..." : "Aceptar"}
           </button>
         </div>
       </div>
